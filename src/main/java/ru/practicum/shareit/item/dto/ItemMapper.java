@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.Repository.UserRepository;
 @RequiredArgsConstructor
 @Component
 public class ItemMapper {
-    final private UserRepository userRepository;
+    final UserRepository userRepository;
 
     public ItemDto toItemDto(Item item) {
         return new ItemDto(
