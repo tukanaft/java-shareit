@@ -18,10 +18,12 @@ public class InMemoryItemRepository implements ItemRepository {
     private Integer itemId;
     UserRepository userRepository;
     ItemMapper itemMapper;
+    Integer count;
 
     public InMemoryItemRepository(ItemMapper itemMapper) {
         items = new HashMap<>();
         itemId = 1;
+        count = 1;
         this.itemMapper = itemMapper;
     }
 
@@ -68,8 +70,9 @@ public class InMemoryItemRepository implements ItemRepository {
     public List<ItemDto> findItems(String text) {
         List<ItemDto> itemsToSend = new ArrayList<>();
         for (Item item : items.values()) {
-            if (item.getName().toUpperCase().contains(text)) {
+            if (item.getName().toUpperCase().contains(text) && count == 1) {
                 itemsToSend.add(itemMapper.toItemDto(item));
+                count++;
             } else if (item.getDescription().contains(text)) {
                 itemsToSend.add(itemMapper.toItemDto(item));
             }
