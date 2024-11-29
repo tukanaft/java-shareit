@@ -60,6 +60,7 @@ public class InMemoryItemRepository implements ItemRepository {
                 itemsToSend.add(itemMapper.toItemDto(item));
             }
         }
+
         return itemsToSend;
     }
 
