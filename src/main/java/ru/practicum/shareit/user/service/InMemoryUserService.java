@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.Repository.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -19,14 +20,19 @@ public class InMemoryUserService implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public Boolean addUser(UserDto user) {
+    public User addUser(UserDto user) {
         validateUser(user);
         return userRepository.addUser(user);
     }
 
     @Override
-    public UserDto updateUser(UserDto user, Integer userId) {
-        validateUser(user);
+    public User updateUser(UserDto user, Integer userId) {
+        if (!userRepository.isUserExists(userId)){
+            throw new NotFoundException("позователя нет в базе");
+        }
+        if (user.getEmail() != null){
+            emailvalidation(user);
+        }
         return userRepository.updateUser(user, userId);
     }
 
@@ -36,8 +42,8 @@ public class InMemoryUserService implements UserService {
     }
 
     @Override
-    public UserDto getUserDto(Integer userId) {
-        return userRepository.getUserDto(userId);
+    public User getUser(Integer userId) {
+        return userRepository.getUser(userId);
     }
 
     @Override
@@ -55,6 +61,14 @@ public class InMemoryUserService implements UserService {
         for (User userCopy : userRepository.getUsers().values()) {
             if (userCopy.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("пользователем с таким имеилом уже добавлен в базу");
+            }
+        }
+    }
+
+    private void emailvalidation (UserDto user){
+        for (User userToCompare : userRepository.getUsers().values()){
+            if (userToCompare.getEmail().equals(user.getEmail())){
+                throw new ValidationException("пользователь с таким имейлом уже существует");
             }
         }
     }

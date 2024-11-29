@@ -6,9 +6,9 @@ import ru.practicum.shareit.user.model.User;
 import java.util.HashMap;
 
 public interface UserRepository {
-    Boolean addUser(UserDto user);
+    User addUser(UserDto user);
 
-    UserDto updateUser(UserDto user, Integer userId);
+    User updateUser(UserDto user, Integer userId);
 
     HashMap<Integer, User> getUsers();
 

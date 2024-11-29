@@ -21,21 +21,22 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Boolean addUser(UserDto user) {
+    public User addUser(UserDto user) {
         User userToSave = userMapper.toUser(user, userId);
         users.put(userToSave.getId(), userToSave);
-        return true;
+        userId++;
+        return userToSave;
     }
 
     @Override
-    public UserDto updateUser(UserDto user, Integer userId) {
+    public User updateUser(UserDto user, Integer userId) {
         if (user.getName() != null) {
             users.get(userId).setName(user.getName());
         }
         if (user.getEmail() != null) {
             users.get(userId).setEmail(user.getEmail());
         }
-        return userMapper.toUserDto(users.get(userId));
+        return users.get(userId);
     }
 
     @Override

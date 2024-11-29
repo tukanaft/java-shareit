@@ -26,30 +26,30 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Boolean addItem(ItemDto item, Integer ownerId) {
-        Item itemSave = itemMapper.toItem(ownerId, item);
+    public Item addItem(ItemDto item, Integer ownerId) {
+        Item itemSave = itemMapper.toItem(itemId, item, ownerId);
         items.put(itemSave.getId(), itemSave);
         itemId++;
-        return true;
+        return itemSave;
     }
 
     @Override
-    public ItemDto updateItem(ItemDto item, Integer itemId) {
+    public Item updateItem(ItemDto item, Integer itemId) {
         if (item.getName() != null) {
             items.get(itemId).setName(item.getName());
         }
         if (item.getDescription() != null) {
             items.get(itemId).setDescription(item.getDescription());
         }
-        if (item.getIsAvailable() != null) {
-            items.get(itemId).setIsAvailable(item.getIsAvailable());
+        if (item.getAvailable() != null) {
+            items.get(itemId).setAvailable(item.getAvailable());
         }
-        return itemMapper.toItemDto(items.get(itemId));
+        return items.get(itemId);
     }
 
     @Override
-    public ItemDto getItem(Integer itemId) {
-        return itemMapper.toItemDto(items.get(itemId));
+    public Item getItem(Integer itemId) {
+        return items.get(itemId);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class InMemoryItemRepository implements ItemRepository {
     public List<ItemDto> findItems(String text) {
         List<ItemDto> itemsToSend = new ArrayList<>();
         for (Item item : items.values()) {
-            if (item.getName().contains(text)) {
+            if (item.getName().toUpperCase().contains(text)) {
                 itemsToSend.add(itemMapper.toItemDto(item));
             } else if (item.getDescription().contains(text)) {
                 itemsToSend.add(itemMapper.toItemDto(item));

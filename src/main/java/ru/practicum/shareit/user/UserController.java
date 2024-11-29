@@ -20,12 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public Boolean addUser(@RequestBody UserDto user) {
+    public User addUser(@RequestBody UserDto user) {
         return userService.addUser(user);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@RequestBody UserDto user, @PathVariable("userId") Integer userId) {
+    public User updateUser(@RequestBody UserDto user, @PathVariable("userId") Integer userId) {
         return userService.updateUser(user, userId);
     }
 
@@ -35,8 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUser(@PathVariable Integer userId) {
-        return userService.getUserDto(userId);
+    public User getUser(@PathVariable Integer userId) {
+        return userService.getUser(userId);
     }
 
     @DeleteMapping("/{userId}")
