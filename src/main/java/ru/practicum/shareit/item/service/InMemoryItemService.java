@@ -3,17 +3,13 @@ package ru.practicum.shareit.item.service;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.Repository.UserRepository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +31,7 @@ public class InMemoryItemService implements ItemService {
     @Override
     public ItemDto updateItem(Integer ownerId, ItemDto item, Integer itemId) {
         isUserExists(ownerId);
-        isUserOwner(ownerId,itemRepository.getItem(itemId));
+        isUserOwner(ownerId, itemRepository.getItem(itemId));
         return itemRepository.updateItem(item, itemId);
     }
 
@@ -45,7 +41,7 @@ public class InMemoryItemService implements ItemService {
     }
 
     @Override
-    public List <ItemDto> getItems(Integer ownerId) {
+    public List<ItemDto> getItems(Integer ownerId) {
         isUserExists(ownerId);
         return itemRepository.getItems(ownerId);
     }
@@ -61,20 +57,20 @@ public class InMemoryItemService implements ItemService {
         }
     }
 
-    private void isUserExists (Integer userId){
+    private void isUserExists(Integer userId) {
         if (!userRepository.isUserExists(userId)) {
             throw new NotFoundException("пользователя нет в базе");
         }
     }
 
-    private void validateItem(ItemDto item){
-        if (item.getName() == null){
+    private void validateItem(ItemDto item) {
+        if (item.getName() == null) {
             throw new ValidationException("не введено имя");
         }
-        if (item.getDescription() == null){
+        if (item.getDescription() == null) {
             throw new ValidationException("не введено описание");
         }
-        if (item.getIsAvailable() == null){
+        if (item.getIsAvailable() == null) {
             throw new ValidationException("не введена информация о доступности");
         }
     }

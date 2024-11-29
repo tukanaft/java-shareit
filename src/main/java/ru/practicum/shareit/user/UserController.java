@@ -30,17 +30,17 @@ public class UserController {
     }
 
     @GetMapping
-    public HashMap<Integer,User> getUsers(){
+    public HashMap<Integer, User> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUser(@PathVariable Integer userId){
+    public UserDto getUser(@PathVariable Integer userId) {
         return userService.getUserDto(userId);
     }
 
     @DeleteMapping("/{userId}")
-    public boolean deleteUser(@PathVariable Integer userId){
+    public boolean deleteUser(@PathVariable Integer userId) {
         return userService.deleteUser(userId);
     }
 }

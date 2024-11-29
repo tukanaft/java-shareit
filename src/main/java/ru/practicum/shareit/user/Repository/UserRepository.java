@@ -10,7 +10,7 @@ public interface UserRepository {
 
     UserDto updateUser(UserDto user, Integer userId);
 
-    HashMap<Integer,User> getUsers();
+    HashMap<Integer, User> getUsers();
 
     User getUser(Integer userId);
 

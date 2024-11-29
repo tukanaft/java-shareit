@@ -11,6 +11,7 @@ public class ExceptionHandler {
     public Map<String, String> notFoundException(final NotFoundException e) {
         return Map.of("Error", e.getMessage());
     }
+
     @org.springframework.web.bind.annotation.ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> validateException(final ValidationException e) {

@@ -10,7 +10,7 @@ public interface UserService {
 
     UserDto updateUser(UserDto user, Integer userId);
 
-    HashMap<Integer,User> getUsers();
+    HashMap<Integer, User> getUsers();
 
     UserDto getUserDto(Integer userId);
 

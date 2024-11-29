@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.Repository;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -24,16 +23,16 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public Boolean addUser(UserDto user) {
         User userToSave = userMapper.toUser(user, userId);
-        users.put(userToSave.getId(),userToSave);
+        users.put(userToSave.getId(), userToSave);
         return true;
     }
 
     @Override
     public UserDto updateUser(UserDto user, Integer userId) {
-        if (user.getName() != null){
+        if (user.getName() != null) {
             users.get(userId).setName(user.getName());
         }
-        if (user.getEmail() != null){
+        if (user.getEmail() != null) {
             users.get(userId).setEmail(user.getEmail());
         }
         return userMapper.toUserDto(users.get(userId));

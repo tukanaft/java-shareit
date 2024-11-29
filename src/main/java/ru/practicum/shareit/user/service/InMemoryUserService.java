@@ -15,7 +15,7 @@ import java.util.HashMap;
 @Service
 @Component
 @RequiredArgsConstructor
-public class InMemoryUserService implements UserService{
+public class InMemoryUserService implements UserService {
     private final UserRepository userRepository;
 
     @Override
@@ -46,14 +46,14 @@ public class InMemoryUserService implements UserService{
     }
 
     private void validateUser(UserDto user) {
-        if (user.getName() == null ){
+        if (user.getName() == null) {
             throw new ValidationException("не введено имя пользователя");
         }
-        if (user.getEmail() == null || !user.getEmail().contains("@")){
+        if (user.getEmail() == null || !user.getEmail().contains("@")) {
             throw new ValidationException("не коректный email");
         }
-        for (User userCopy : userRepository.getUsers().values()){
-            if (userCopy.getEmail().equals(user.getEmail())){
+        for (User userCopy : userRepository.getUsers().values()) {
+            if (userCopy.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("пользователем с таким имеилом уже добавлен в базу");
             }
         }
