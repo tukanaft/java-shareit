@@ -27,10 +27,10 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public User updateUser(UserDto user, Integer userId) {
-        if (!userRepository.isUserExists(userId)){
+        if (!userRepository.isUserExists(userId)) {
             throw new NotFoundException("позователя нет в базе");
         }
-        if (user.getEmail() != null){
+        if (user.getEmail() != null) {
             emailvalidation(user);
         }
         return userRepository.updateUser(user, userId);
@@ -65,9 +65,9 @@ public class InMemoryUserService implements UserService {
         }
     }
 
-    private void emailvalidation (UserDto user){
-        for (User userToCompare : userRepository.getUsers().values()){
-            if (userToCompare.getEmail().equals(user.getEmail())){
+    private void emailvalidation(UserDto user) {
+        for (User userToCompare : userRepository.getUsers().values()) {
+            if (userToCompare.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("пользователь с таким имейлом уже существует");
             }
         }

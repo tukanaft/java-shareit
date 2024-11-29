@@ -50,7 +50,7 @@ public class InMemoryItemService implements ItemService {
 
     @Override
     public List<ItemDto> findItems(String text) {
-        if (text.isEmpty()){
+        if (text.isEmpty()) {
             return new ArrayList<>();
         }
         return itemRepository.findItems(text);
