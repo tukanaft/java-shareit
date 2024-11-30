@@ -1,20 +1,17 @@
-package ru.practicum.shareit.user.Repository;
+package ru.practicum.shareit.user.repository;
 
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 
 public interface UserRepository {
-    User addUser(UserDto user);
+    User addUser(User user);
 
-    User updateUser(UserDto user, Integer userId);
+    User updateUser(User user, Integer userId);
 
     HashMap<Integer, User> getUsers();
 
     User getUser(Integer userId);
-
-    UserDto getUserDto(Integer userId);
 
     Boolean isUserExists(Integer userId);
 

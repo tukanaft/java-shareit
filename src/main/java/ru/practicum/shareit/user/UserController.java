@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.HashMap;
@@ -20,27 +19,32 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User addUser(@RequestBody UserDto user) {
+    public UserDto addUser(@RequestBody UserDto user) {
+        log.info("UserController выполнение запроса на добавление пользователя");
         return userService.addUser(user);
     }
 
     @PatchMapping("/{userId}")
-    public User updateUser(@RequestBody UserDto user, @PathVariable("userId") Integer userId) {
+    public UserDto updateUser(@RequestBody UserDto user, @PathVariable("userId") Integer userId) {
+        log.info("UserController выполнение запроса на обновление пользователя: {}", userId);
         return userService.updateUser(user, userId);
     }
 
     @GetMapping
-    public HashMap<Integer, User> getUsers() {
+    public HashMap<Integer, UserDto> getUsers() {
+        log.info("UserController выполнение запроса на отправление всех пользователей");
         return userService.getUsers();
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable Integer userId) {
+    public UserDto getUser(@PathVariable Integer userId) {
+        log.info("UserController выполнение запроса на отправление пользователя: {}", userId);
         return userService.getUser(userId);
     }
 
     @DeleteMapping("/{userId}")
     public boolean deleteUser(@PathVariable Integer userId) {
+        log.info("UserController выполнение запроса на удаление пользователя: {}", userId);
         return userService.deleteUser(userId);
     }
 }

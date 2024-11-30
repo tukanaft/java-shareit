@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.model.User;
 @Data
 @AllArgsConstructor
 public class ItemDto {
+    Integer id;
     String name;
     String description;
     User owner;

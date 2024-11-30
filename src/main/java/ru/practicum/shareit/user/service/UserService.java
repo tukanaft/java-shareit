@@ -1,18 +1,17 @@
 package ru.practicum.shareit.user.service;
 
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 
 public interface UserService {
-    User addUser(UserDto user);
+    UserDto addUser(UserDto user);
 
-    User updateUser(UserDto user, Integer userId);
+    UserDto updateUser(UserDto user, Integer userId);
 
-    HashMap<Integer, User> getUsers();
+    HashMap<Integer, UserDto> getUsers();
 
-    User getUser(Integer userId);
+    UserDto getUser(Integer userId);
 
     Boolean deleteUser(Integer userId);
 }

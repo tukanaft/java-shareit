@@ -1,7 +1,6 @@
-package ru.practicum.shareit.user.Repository;
+package ru.practicum.shareit.user.repository;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 
@@ -12,24 +11,21 @@ import java.util.HashMap;
 public class InMemoryUserRepository implements UserRepository {
     private HashMap<Integer, User> users;
     private Integer userId;
-    private UserMapper userMapper;
-
     public InMemoryUserRepository(UserMapper userMapper) {
         users = new HashMap<>();
         userId = 1;
-        this.userMapper = userMapper;
     }
 
     @Override
-    public User addUser(UserDto user) {
-        User userToSave = userMapper.toUser(user, userId);
-        users.put(userToSave.getId(), userToSave);
+    public User addUser(User user) {
+        user.setId(userId);
+        users.put(user.getId(), user);
         userId++;
-        return userToSave;
+        return user;
     }
 
     @Override
-    public User updateUser(UserDto user, Integer userId) {
+    public User updateUser(User user, Integer userId) {
         if (user.getName() != null) {
             users.get(userId).setName(user.getName());
         }
@@ -49,10 +45,6 @@ public class InMemoryUserRepository implements UserRepository {
         return (users.get(userId));
     }
 
-    @Override
-    public UserDto getUserDto(Integer userId) {
-        return userMapper.toUserDto(users.get(userId));
-    }
 
     @Override
     public Boolean isUserExists(Integer userId) {
