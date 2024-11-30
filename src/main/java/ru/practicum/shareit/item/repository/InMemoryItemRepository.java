@@ -23,7 +23,7 @@ public class InMemoryItemRepository implements ItemRepository {
     public Item addItem(Item item) {
         item.setId(itemId);
         items.put(item.getId(), item);
-        itemId ++;
+        itemId++;
         return item;
     }
 

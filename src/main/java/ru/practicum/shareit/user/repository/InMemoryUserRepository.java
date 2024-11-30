@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class InMemoryUserRepository implements UserRepository {
     private HashMap<Integer, User> users;
     private Integer userId;
+
     public InMemoryUserRepository(UserMapper userMapper) {
         users = new HashMap<>();
         userId = 1;
