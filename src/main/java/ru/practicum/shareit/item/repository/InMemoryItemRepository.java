@@ -66,9 +66,10 @@ public class InMemoryItemRepository implements ItemRepository {
     @Override
     public List<Item> findItems(String text) {
         List<Item> itemsToSend = new ArrayList<>();
+
         for (Item item : items.values()) {
-            if (item.getName().toUpperCase().contains(text.toUpperCase()) ||
-                    item.getDescription().toUpperCase().contains(text.toUpperCase())) {
+            if ((item.getName().toUpperCase().contains(text.toUpperCase()) ||
+                    item.getDescription().toUpperCase().contains(text.toUpperCase())) && item.getAvailable()) {
                 itemsToSend.add(item);
             }
         }
