@@ -135,8 +135,7 @@ public class InMemoryBookingService implements BookingService {
     }
 
     private void validationToGet(BookingDtoToReturn booking, Integer userId) {
-        if (Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner().getId(), userId)) {
-        } else {
+        if (!Objects.equals(booking.getBooker().getId(), userId) && !Objects.equals(booking.getItem().getOwner().getId(), userId)) {
             throw new ValidationException("пользователь" + userId + "не явлеяется ни хозяином предмта, ни автором бронирования");
         }
     }
