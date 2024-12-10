@@ -6,17 +6,18 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-/**
- * TODO Sprint add-controllers.
- */
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ItemDto {
+public class ItemDtoWithoutBooking {
     Integer id;
     String name;
     String description;
     User owner;
     Boolean available;
     ItemRequest request;
+    List<CommentDto> comments;
 }
+
