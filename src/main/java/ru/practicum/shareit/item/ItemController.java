@@ -3,7 +3,9 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -32,13 +34,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Integer ownerId, @PathVariable Integer itemId) {
+    public ItemDtoWithBooking getItem(@RequestHeader("X-Sharer-User-Id") Integer ownerId, @PathVariable Integer itemId) {
         log.info("ItemController выполнение запроса на отправление предмета: {}", itemId);
         return itemService.getItem(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
+    public List<ItemDtoWithBooking> getItems(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
         log.info("ItemController выполнение запроса на отправление всех предметов");
         return itemService.getItems(ownerId);
     }
@@ -47,5 +49,12 @@ public class ItemController {
     public List<ItemDto> findItems(@RequestHeader("X-Sharer-User-Id") Integer ownerId, @RequestParam String text) {
         log.info("ItemController выполнение запроса на поиск предмета");
         return itemService.findItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Integer userId, @RequestBody CommentDto comment,
+                                 @PathVariable Integer itemId) {
+        log.info("ItemController выполнение запроса на добавление каомментарию к предмету: {}", itemId);
+        return itemService.addComment(comment, itemId, userId);
     }
 }

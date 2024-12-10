@@ -3,7 +3,8 @@ package ru.practicum.shareit.user.dto;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UserMapper {
@@ -23,10 +24,10 @@ public class UserMapper {
         );
     }
 
-    public HashMap<Integer, UserDto> toUserDtoHashMap(HashMap<Integer, User> users) {
-        HashMap<Integer, UserDto> usersDto = new HashMap<>();
-        for (User user : users.values()) {
-            usersDto.put(user.getId(), new UserDto(
+    public List<UserDto> toUserDtoList(List<User> users) {
+        List<UserDto> usersDto = new ArrayList<>();
+        for (User user : users) {
+            usersDto.add(new UserDto(
                     user.getId(),
                     user.getName(),
                     user.getEmail()
