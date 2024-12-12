@@ -35,8 +35,8 @@ public class InMemoryBookingService implements BookingService {
     public BookingDtoToReturn addBooking(BookingDto booking, Integer bookerId) {
         log.info("BookingService выполнение запроса на добавление бронирования");
         validateBooking(booking, bookerId);
-        booking.setBooker(userRepository.findById(bookerId).
-                orElseThrow(() -> new NotFoundException("пользователя " + bookerId + "нет в базе")));
+        booking.setBooker(userRepository.findById(bookerId)
+                .orElseThrow(() -> new NotFoundException("пользователя " + bookerId + "нет в базе")));
         Item item = itemRepository.findById(booking.getItemId())
                 .orElseThrow(() -> new NotFoundException("предмета" + booking.getItemId() + "нет в базе"));
         Booking bookingToSave = bookingMapper.toBooking(booking, item);
