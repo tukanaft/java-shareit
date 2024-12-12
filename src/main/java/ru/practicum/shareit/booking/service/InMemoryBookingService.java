@@ -63,8 +63,7 @@ public class InMemoryBookingService implements BookingService {
     @Override
     public BookingDtoToReturn getBooking(Integer bookingId, Integer userId) {
         log.info("BookingService выполнение запроса на отправление информации о бронировании: {}", bookingId);
-        BookingDtoToReturn booking = bookingMapper.toBookingDtoToReturn(
-                bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("бронирования c id " + bookingId + "нет в базе")));
+        BookingDtoToReturn booking = bookingMapper.toBookingDtoToReturn(getBookingById(bookingId));
         validationToGet(booking, userId);
         return booking;
     }
