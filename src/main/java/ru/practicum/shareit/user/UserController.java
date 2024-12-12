@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.util.HashMap;
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping
-    public HashMap<Integer, UserDto> getUsers() {
+    public List<UserDto> getUsers() {
         log.info("UserController выполнение запроса на отправление всех пользователей");
         return userService.getUsers();
     }
@@ -43,8 +43,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public boolean deleteUser(@PathVariable Integer userId) {
+    public void deleteUser(@PathVariable Integer userId) {
         log.info("UserController выполнение запроса на удаление пользователя: {}", userId);
-        return userService.deleteUser(userId);
+        userService.deleteUser(userId);
     }
 }

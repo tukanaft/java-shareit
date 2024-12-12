@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -25,37 +25,39 @@ public class InMemoryUserService implements UserService {
     public UserDto addUser(UserDto user) {
         log.info("UserService выполнение запроса на добавление пользователя");
         validateUser(user);
-        return userMapper.toUserDto(userRepository.addUser(userMapper.toUser(user)));
+        return userMapper.toUserDto(userRepository.save(userMapper.toUser(user)));
     }
 
     @Override
     public UserDto updateUser(UserDto user, Integer userId) {
         log.info("UserService выполнение запроса на обновление пользователя: {}", userId);
-        if (!userRepository.isUserExists(userId)) {
-            throw new NotFoundException("позователя" + userId + " нет в базе");
-        }
+        User userToUpdate = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("позователя" + userId + " нет в базе"));
         if (user.getEmail() != null) {
             emailvalidation(user, userId);
+            userToUpdate.setEmail(user.getEmail());
         }
-        return userMapper.toUserDto(userRepository.updateUser(userMapper.toUser(user), userId));
+        if (user.getName() != null) {
+            userToUpdate.setName(user.getName());
+        }
+        return userMapper.toUserDto(userRepository.save(userToUpdate));
     }
 
     @Override
-    public HashMap<Integer, UserDto> getUsers() {
+    public List<UserDto> getUsers() {
         log.info("UserService выполнение запроса на отправление всех пользователей");
-        return userMapper.toUserDtoHashMap(userRepository.getUsers());
+        return userMapper.toUserDtoList(userRepository.findAll());
     }
 
     @Override
     public UserDto getUser(Integer userId) {
         log.info("UserService выполнение запроса на отправление пользователя: {}", userId);
-        return userMapper.toUserDto(userRepository.getUser(userId));
+        return userMapper.toUserDto(userRepository.findById(userId).orElseThrow(() -> new NotFoundException("позователя" + userId + " нет в базе")));
     }
 
     @Override
-    public Boolean deleteUser(Integer userId) {
+    public void deleteUser(Integer userId) {
         log.info("UserService выполнение запроса на удвление пользователя: {}", userId);
-        return userRepository.deleteUser(userId);
+        userRepository.deleteById(userId);
     }
 
     private void validateUser(UserDto user) {
@@ -65,7 +67,7 @@ public class InMemoryUserService implements UserService {
         if (user.getEmail() == null || !user.getEmail().contains("@")) {
             throw new ValidationException("не коректный email");
         }
-        for (User userCopy : userRepository.getUsers().values()) {
+        for (User userCopy : userRepository.findAll()) {
             if (userCopy.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("пользователем с таким имеилом уже добавлен в базу");
             }
@@ -73,7 +75,7 @@ public class InMemoryUserService implements UserService {
     }
 
     private void emailvalidation(UserDto user, Integer userId) {
-        for (User userToCompare : userRepository.getUsers().values()) {
+        for (User userToCompare : userRepository.findAll()) {
             if (userToCompare.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("пользователь с таким имейлом уже существует");
             }
