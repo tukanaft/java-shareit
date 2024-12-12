@@ -35,8 +35,14 @@ public class InMemoryBookingService implements BookingService {
     public BookingDtoToReturn addBooking(BookingDto booking, Integer bookerId) {
         log.info("BookingService выполнение запроса на добавление бронирования");
         validateBooking(booking, bookerId);
-        booking.setBooker(userRepository.findById(bookerId).get());
-        Booking bookingToSave = bookingMapper.toBooking(booking, itemRepository.findById(booking.getItemId()).get());
+        booking.setBooker(userRepository.findById(bookerId).
+                orElseThrow(() -> new NotFoundException("пользователя " + bookerId + "нет в базе")));
+        Item item = itemRepository.findById(booking.getItemId())
+                .orElseThrow(() -> new NotFoundException("предмета" + booking.getItemId() + "нет в базе"));
+        Booking bookingToSave = bookingMapper.toBooking(booking, item);
+        if (item.getAvailable().equals(false)) {
+            throw new ValidationException("в данный момент предмет не доступен");
+        }
         bookingToSave.setStatus(Status.WAITING);
         return bookingMapper.toBookingDtoToReturn(bookingRepository.save(bookingToSave));
     }
@@ -44,7 +50,7 @@ public class InMemoryBookingService implements BookingService {
     @Override
     public BookingDtoToReturn updateStatus(Integer userId, Integer bookingId, Boolean status) {
         log.info("BookingService выполнение запроса на обновление информации о бронировании: {}", bookingId);
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("бронирования c id " + bookingId + "нет в базе"));
+        Booking booking = getBookingById(bookingId);
         isUserOwner(userId, bookingId);
         if (status) {
             booking.setStatus(Status.APPROVED);
@@ -115,13 +121,6 @@ public class InMemoryBookingService implements BookingService {
     private void validateBooking(BookingDto booking, Integer bookerId) {
         LocalDateTime start = booking.getStart();
         LocalDateTime end = booking.getEnd();
-        Item item = itemRepository.findById(booking.getItemId()).orElseThrow(() -> new NotFoundException("предмета" + booking.getItemId() + "нет в базе"));
-        if (!userRepository.existsById(bookerId)) {
-            throw new NotFoundException("пользователя" + bookerId + "нет в базе");
-        }
-        if (item.getAvailable().equals(false)) {
-            throw new ValidationException("в данный момент предмет не доступен");
-        }
         if (start == null || end == null || start.isEqual(end) || start.isBefore(LocalDateTime.now()) || end.isBefore(start)) {
             throw new ValidationException("не введены или не верно введены параметры времени");
         }
@@ -130,13 +129,18 @@ public class InMemoryBookingService implements BookingService {
     private void isUserOwner(Integer userId, Integer bookingId) {
 
         if (!Objects.equals(bookingRepository.findById(bookingId).get().getItem().getOwner().getId(), userId)) {
-            throw new ValidationException("пользователь" + userId + "не явлеяется хозяином предмта");
+            throw new ValidationException("пользователь" + userId + "не явлеяется хозяином предмета");
         }
     }
 
     private void validationToGet(BookingDtoToReturn booking, Integer userId) {
         if (!Objects.equals(booking.getBooker().getId(), userId) && !Objects.equals(booking.getItem().getOwner().getId(), userId)) {
-            throw new ValidationException("пользователь" + userId + "не явлеяется ни хозяином предмта, ни автором бронирования");
+            throw new ValidationException("пользователь" + userId + "не явлеяется ни хозяином предмета, ни автором бронирования");
         }
+    }
+
+    private Booking getBookingById(Integer bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("бронирования c id " + bookingId + "нет в базе"));
+        return booking;
     }
 }
