@@ -10,7 +10,16 @@
         <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/server/pom.xml" />
         <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/gateway/pom.xml" />
         <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/java-shareit-add-item-requests-and-gateway/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/java-shareit-add-item-requests-and-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/java-shareit-add-item-requests-and-gateway/server/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/server/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK">
