@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemForRequest {
-    Integer Id;
-    String Name;
+    Integer id;
+    String name;
     Integer ownerId;
 }
