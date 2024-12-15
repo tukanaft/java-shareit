@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     @NotEmpty
     String name;
-    @Email
     String email;
 }
