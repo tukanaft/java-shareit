@@ -16,9 +16,9 @@ public class RequestController {
     private final RequestClient requestClient;
 
     @PostMapping
-    public ResponseEntity<Object> addRequest(@RequestHeader("X-Sharer-User-Id") Integer authorId, @RequestBody String Description) {
+    public ResponseEntity<Object> addRequest(@RequestHeader("X-Sharer-User-Id") Integer authorId, @RequestBody String description) {
         log.info("ItemRequestController выполнение запроса на добавление запроса");
-        return requestClient.addRequest(authorId, Description);
+        return requestClient.addRequest(authorId, description);
     }
 
     @GetMapping

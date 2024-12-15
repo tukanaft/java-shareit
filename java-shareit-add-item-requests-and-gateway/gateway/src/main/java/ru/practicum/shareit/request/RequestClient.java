@@ -23,8 +23,8 @@ public class RequestClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> addRequest(Integer authorId, String Description) {
-        return post("", authorId, Description);
+    public ResponseEntity<Object> addRequest(Integer authorId, String description) {
+        return post("", authorId, description);
     }
 
     public ResponseEntity<Object> getUserRequests(Integer ownerId) {
