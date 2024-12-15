@@ -7,6 +7,8 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/share-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/shareit-server/pom.xml" />
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/server/pom.xml" />
+        <option value="$PROJECT_DIR$/java-shareit-add-item-requests-and-gateway/gateway/pom.xml" />
       </list>
     </option>
   </component>
