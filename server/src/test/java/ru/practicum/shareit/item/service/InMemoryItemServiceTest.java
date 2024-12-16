@@ -129,9 +129,6 @@ class InMemoryItemServiceTest {
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         List<ItemDtoWithBooking> items = itemService.getItems(userDto.getId());
-        Assertions.assertThat(items.getFirst().getName()).isEqualTo(items.getFirst().getName());
-        Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(items.getFirst().getDescription());
-        Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(items.getFirst().getId());
-        Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(items.getFirst().getAvailable());
+        Assertions.assertThat(itemDto).isEqualTo(itemDto);
     }
 }
