@@ -12,6 +12,7 @@ import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
 import java.util.List;
+
 @Slf4j
 @Service
 @Component

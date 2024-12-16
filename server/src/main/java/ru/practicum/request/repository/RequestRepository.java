@@ -7,8 +7,9 @@ import ru.practicum.request.model.Request;
 import ru.practicum.user.model.User;
 
 import java.util.List;
+
 @Repository
-public interface RequestRepository  extends JpaRepository<Request, Integer> {
+public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     List<Request> findAllByAuthor_Id(Integer authorId);
 
