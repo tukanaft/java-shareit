@@ -61,6 +61,11 @@ public class InMemoryUserService implements UserService {
         return true;
     }
 
+    @Override
+    public void clear() {
+        userRepository.deleteAll();
+    }
+
     private void emailvalidation(UserDto user, Integer userId) {
         for (User userToCompare : userRepository.findAll()) {
             if (userToCompare.getEmail().equals(user.getEmail())) {
