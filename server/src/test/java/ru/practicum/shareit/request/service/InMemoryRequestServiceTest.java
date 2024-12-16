@@ -53,7 +53,7 @@ class InMemoryRequestServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd"
+                "email@asdasdf[poa,]-0foa-efrsfcbstgjr5rytdsf"
         );
         userDto = userService.addUser(userDto);
         RequestDto saveRequest = requestService.addRequest(userDto.getId(), requestDto);
@@ -65,7 +65,7 @@ class InMemoryRequestServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd1"
+                "email@asd1agpsfdkg-w5iysmfibm0s9erti"
         );
         userDto = userService.addUser(userDto);
         requestDto = requestService.addRequest(userDto.getId(), requestDto);
@@ -90,12 +90,12 @@ class InMemoryRequestServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd2"
+                "email@asd2aga]podfigu=etikzi8fdgh=e4t"
         );
         UserDto userDto2 = new UserDto(
                 null,
                 "name",
-                "email@asd10"
+                "email@asd10adfgo[umg0ea49ti,=az-dfj9g="
         );
         userDto = userService.addUser(userDto);
         userDto2 = userService.addUser(userDto2);
@@ -109,7 +109,7 @@ class InMemoryRequestServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd3"
+                "email@asd3adfgvb]o[gubi0m[,-ah9fj,.caeo0rk."
         );
         userDto = userService.addUser(userDto);
         requestDto = requestService.addRequest(userDto.getId(), requestDto);

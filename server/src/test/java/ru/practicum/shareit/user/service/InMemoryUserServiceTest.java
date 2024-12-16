@@ -28,7 +28,7 @@ class InMemoryUserServiceTest {
     UserDto userDto = new UserDto(
             null,
             "name",
-            "email@asd"
+            "email@asd[;pl;lmknwefoisafd"
     );
 
     @AfterEach

@@ -56,7 +56,7 @@ class InMemoryBookingServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd"
+                "email@asdWEVW=0.]-0E/XRK=W-E0LRC"
         );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
@@ -74,7 +74,7 @@ class InMemoryBookingServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd1"
+                "email@asd1 W]E[FI-0,C.W=-RCI.W0ROIC"
         );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
@@ -91,7 +91,7 @@ class InMemoryBookingServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd2"
+                "email@asd2wxw=ecrp/w.=e-o.w-0irow"
         );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
@@ -108,7 +108,7 @@ class InMemoryBookingServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd3"
+                "email@asd3WER[]0,W.-0RIVW=-E0.K/CW"
         );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
@@ -125,7 +125,7 @@ class InMemoryBookingServiceTest {
         UserDto userDto = new UserDto(
                 null,
                 "name",
-                "email@asd4"
+                "email@asd4wevr[]p-we,.=i.w/-0kxo=o"
         );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
