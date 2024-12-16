@@ -64,7 +64,7 @@ class InMemoryRequestServiceTest {
     @Test
     void addRequest() {
         userDto = userService.addUser(userDto);
-        RequestDto saveRequest = requestService.addRequest(1, requestDto);
+        RequestDto saveRequest = requestService.addRequest(userDto.getId(), requestDto);
         Assertions.assertThat(requestDto.getDescription()).isEqualTo(requestDto.getDescription());
     }
 
