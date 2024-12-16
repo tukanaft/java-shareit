@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,10 +12,13 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.RequestDto;
+import ru.practicum.shareit.request.dto.RequestDtoWithItem;
 import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
+
+import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -50,17 +54,24 @@ class InMemoryRequestServiceTest {
             "email@asd"
     );
 
+    @AfterEach
+    void clearDb() {
+        itemRepository.deleteAll();
+        requestRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Test
     void addRequest() {
-        //userDto = userService.addUser(userDto);
-        //RequestDto saveRequest = requestService.addRequest(1, requestDto);
+        userDto = userService.addUser(userDto);
+        RequestDto saveRequest = requestService.addRequest(1, requestDto);
         Assertions.assertThat(requestDto.getDescription()).isEqualTo(requestDto.getDescription());
     }
 
     @Test
     void getUserRequests() {
-        //userDto = userService.addUser(userDto);
-        //requestDto = requestService.addRequest(userDto.getId(), requestDto);
+        userDto = userService.addUser(userDto);
+        requestDto = requestService.addRequest(userDto.getId(), requestDto);
         ItemDto itemDto = new ItemDto(
                 null,
                 "item",
@@ -70,11 +81,11 @@ class InMemoryRequestServiceTest {
                 requestDto.getId()
 
         );
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //List<RequestDtoWithItem> requestDtoWithItems = requestService.getUserRequests(userDto.getId());
-        Assertions.assertThat(requestDto.getDescription()).isEqualTo(requestDto.getDescription());
-        Assertions.assertThat(itemDto.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(userDto.getId()).isEqualTo(userDto.getId());
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        List<RequestDtoWithItem> requestDtoWithItems = requestService.getUserRequests(userDto.getId());
+        Assertions.assertThat(requestDtoWithItems.getFirst().getDescription()).isEqualTo(requestDto.getDescription());
+        Assertions.assertThat(requestDtoWithItems.getFirst().getItems().getFirst().getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(requestDtoWithItems.getFirst().getItems().getFirst().getOwnerId()).isEqualTo(userDto.getId());
     }
 
     @Test
@@ -84,18 +95,18 @@ class InMemoryRequestServiceTest {
                 "name",
                 "email@asd10"
         );
-        //userDto = userService.addUser(userDto);
-        //userDto2 = userService.addUser(userDto2);
-        //requestDto = requestService.addRequest(userDto.getId(), requestDto);
-        //List<RequestDto> requests = requestService.getAllRequests(userDto2.getId());
-        Assertions.assertThat(requestDto.getDescription()).isEqualTo(requestDto.getDescription());
+        userDto = userService.addUser(userDto);
+        userDto2 = userService.addUser(userDto2);
+        requestDto = requestService.addRequest(userDto.getId(), requestDto);
+        List<RequestDto> requests = requestService.getAllRequests(userDto2.getId());
+        Assertions.assertThat(requests.getFirst().getDescription()).isEqualTo(requestDto.getDescription());
     }
 
     @Test
     void getRequestById() {
-        //userDto = userService.addUser(userDto);
-        //requestDto = requestService.addRequest(userDto.getId(), requestDto);
-        //RequestDtoWithItem saveRequest = requestService.getRequestById(requestDto.getId());
-        Assertions.assertThat(requestDto.getDescription()).isEqualTo(requestDto.getDescription());
+        userDto = userService.addUser(userDto);
+        requestDto = requestService.addRequest(userDto.getId(), requestDto);
+        RequestDtoWithItem saveRequest = requestService.getRequestById(requestDto.getId());
+        Assertions.assertThat(saveRequest.getDescription()).isEqualTo(requestDto.getDescription());
     }
 }

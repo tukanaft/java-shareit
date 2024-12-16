@@ -2,19 +2,25 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoToReturn;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -29,6 +35,16 @@ class InMemoryBookingServiceTest {
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
 
     BookingDto bookingDto = new BookingDto(
             null,
@@ -48,6 +64,13 @@ class InMemoryBookingServiceTest {
             null
     );
 
+    @AfterEach
+    void clearDb() {
+        bookingRepository.deleteAll();
+        itemRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Test
     void addBooking() throws InterruptedException {
         UserDto userDto = new UserDto(
@@ -55,13 +78,15 @@ class InMemoryBookingServiceTest {
                 "name",
                 "email@asd"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //bookingDto.setItemId(itemDto.getId());
-        //BookingDtoToReturn bookingActual = bookingService.addBooking(bookingDto, userDto.getId());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        BookingDtoToReturn bookingActual = bookingService.addBooking(bookingDto, userDto.getId());
         bookingDto.setStatus(Status.WAITING);
-        Assertions.assertThat(bookingDto.getItemId()).isEqualTo(bookingDto.getItemId());
-        Assertions.assertThat(bookingDto.getStatus()).isEqualTo(bookingDto.getStatus());
+        Assertions.assertThat(bookingActual.getStart()).isEqualTo(bookingDto.getStart());
+        Assertions.assertThat(bookingActual.getEnd()).isEqualTo(bookingDto.getEnd());
+        Assertions.assertThat(bookingActual.getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingActual.getStatus()).isEqualTo(bookingDto.getStatus());
     }
 
     @Test
@@ -71,14 +96,14 @@ class InMemoryBookingServiceTest {
                 "name",
                 "email@asd1"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //bookingDto.setItemId(itemDto.getId());
-        //bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
-        //BookingDtoToReturn bookingActual = bookingService.updateStatus(userDto.getId(), bookingDto.getId(), true);
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        BookingDtoToReturn bookingActual = bookingService.updateStatus(userDto.getId(), bookingDto.getId(), true);
         bookingDto.setStatus(Status.APPROVED);
-        Assertions.assertThat(bookingDto.getItemId()).isEqualTo(bookingDto.getItemId());
-        Assertions.assertThat(bookingDto.getStatus()).isEqualTo(bookingDto.getStatus());
+        Assertions.assertThat(bookingActual.getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingActual.getStatus()).isEqualTo(bookingDto.getStatus());
     }
 
     @Test
@@ -88,14 +113,14 @@ class InMemoryBookingServiceTest {
                 "name",
                 "email@asd2"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //bookingDto.setItemId(itemDto.getId());
-        //bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
         bookingDto.setStatus(Status.WAITING);
-        //BookingDtoToReturn bookingActual = bookingService.getBooking(bookingDto.getId(), userDto.getId());
-        Assertions.assertThat(bookingDto.getItemId()).isEqualTo(bookingDto.getItemId());
-        Assertions.assertThat(bookingDto.getStatus()).isEqualTo(bookingDto.getStatus());
+        BookingDtoToReturn bookingActual = bookingService.getBooking(bookingDto.getId(), userDto.getId());
+        Assertions.assertThat(bookingActual.getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingActual.getStatus()).isEqualTo(bookingDto.getStatus());
     }
 
     @Test
@@ -105,14 +130,14 @@ class InMemoryBookingServiceTest {
                 "name",
                 "email@asd3"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //bookingDto.setItemId(itemDto.getId());
-        //bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
         bookingDto.setStatus(Status.WAITING);
-        //List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "ALL");
-        Assertions.assertThat(bookingDto.getItemId()).isEqualTo(bookingDto.getItemId());
-        Assertions.assertThat(bookingDto.getStatus()).isEqualTo(bookingDto.getStatus());
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "ALL");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
     }
 
     @Test
@@ -122,13 +147,13 @@ class InMemoryBookingServiceTest {
                 "name",
                 "email@asd4"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //bookingDto.setItemId(itemDto.getId());
-        //bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
         bookingDto.setStatus(Status.WAITING);
-        //List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "ALL");
-        Assertions.assertThat(bookingDto.getItemId()).isEqualTo(bookingDto.getItemId());
-        Assertions.assertThat(bookingDto.getStatus()).isEqualTo(bookingDto.getStatus());
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "ALL");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
     }
 }

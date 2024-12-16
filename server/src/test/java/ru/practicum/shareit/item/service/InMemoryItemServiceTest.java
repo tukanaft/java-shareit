@@ -10,10 +10,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
+
+import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -57,12 +60,12 @@ class InMemoryItemServiceTest {
                 "name",
                 "email@asd"
         );
-       //userDto = userService.addUser(userDto);
-        //ItemDto saveItem = itemService.addItem(userDto.getId(), itemDto);
-        Assertions.assertThat(itemDto.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(itemDto.getDescription()).isEqualTo(itemDto.getDescription());
-        Assertions.assertThat(userDto.getId()).isEqualTo(userDto.getId());
-        Assertions.assertThat(itemDto.getAvailable()).isEqualTo(itemDto.getAvailable());
+        userDto = userService.addUser(userDto);
+        ItemDto saveItem = itemService.addItem(userDto.getId(), itemDto);
+        Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(saveItem.getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
     }
 
     @Test
@@ -72,16 +75,16 @@ class InMemoryItemServiceTest {
                 "name1",
                 "email@asd1"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
         itemDto.setName("new name");
         itemDto.setDescription("new description");
         itemDto.setAvailable(false);
-        //ItemDto saveItem = itemService.updateItem(userDto.getId(), itemDto, itemDto.getId());
-        Assertions.assertThat(itemDto.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(itemDto.getDescription()).isEqualTo(itemDto.getDescription());
-        Assertions.assertThat(userDto.getId()).isEqualTo(userDto.getId());
-        Assertions.assertThat(itemDto.getAvailable()).isEqualTo(itemDto.getAvailable());
+        ItemDto saveItem = itemService.updateItem(userDto.getId(), itemDto, itemDto.getId());
+        Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(saveItem.getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
     }
 
     @Test
@@ -91,13 +94,13 @@ class InMemoryItemServiceTest {
                 "name2",
                 "email@asd2"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //ItemDtoWithBooking saveItem = itemService.getItem(itemDto.getId());
-        Assertions.assertThat(itemDto.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(itemDto.getDescription()).isEqualTo(itemDto.getDescription());
-        Assertions.assertThat(userDto.getId()).isEqualTo(userDto.getId());
-        Assertions.assertThat(itemDto.getAvailable()).isEqualTo(itemDto.getAvailable());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        ItemDtoWithBooking saveItem = itemService.getItem(itemDto.getId());
+        Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(saveItem.getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
     }
 
     @Test
@@ -107,13 +110,13 @@ class InMemoryItemServiceTest {
                 "name3",
                 "email@asd3"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //List<ItemDtoWithBooking> items = itemService.getItems(itemDto.getOwner().getId());
-        Assertions.assertThat(itemDto.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(itemDto.getDescription()).isEqualTo(itemDto.getDescription());
-        Assertions.assertThat(userDto.getId()).isEqualTo(userDto.getId());
-        Assertions.assertThat(itemDto.getAvailable()).isEqualTo(itemDto.getAvailable());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        List<ItemDtoWithBooking> items = itemService.getItems(itemDto.getOwner().getId());
+        Assertions.assertThat(items.getFirst().getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(itemDto.getAvailable());
     }
 
     @Test
@@ -123,12 +126,12 @@ class InMemoryItemServiceTest {
                 "name4",
                 "email@asd4"
         );
-        //userDto = userService.addUser(userDto);
-        //itemDto = itemService.addItem(userDto.getId(), itemDto);
-        //List<ItemDtoWithBooking> items = itemService.getItems(userDto.getId());
-        Assertions.assertThat(itemDto.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(itemDto.getDescription()).isEqualTo(itemDto.getDescription());
-        Assertions.assertThat(userDto.getId()).isEqualTo(userDto.getId());
-        Assertions.assertThat(itemDto.getAvailable()).isEqualTo(itemDto.getAvailable());
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        List<ItemDtoWithBooking> items = itemService.getItems(userDto.getId());
+        Assertions.assertThat(items.getFirst().getName()).isEqualTo(items.getFirst().getName());
+        Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(items.getFirst().getDescription());
+        Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(items.getFirst().getId());
+        Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(items.getFirst().getAvailable());
     }
 }
