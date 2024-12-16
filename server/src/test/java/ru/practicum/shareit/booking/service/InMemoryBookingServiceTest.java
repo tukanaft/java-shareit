@@ -1,4 +1,4 @@
-package test.java.ru.practicum.shareit.booking.service;
+package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;

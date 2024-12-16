@@ -1,4 +1,4 @@
-package test.java.ru.practicum.shareit.request;
+package ru.practicum.shareit.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;

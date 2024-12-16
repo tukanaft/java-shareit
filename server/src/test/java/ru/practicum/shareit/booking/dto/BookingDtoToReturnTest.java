@@ -1,4 +1,4 @@
-package test.java.ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking.dto;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
