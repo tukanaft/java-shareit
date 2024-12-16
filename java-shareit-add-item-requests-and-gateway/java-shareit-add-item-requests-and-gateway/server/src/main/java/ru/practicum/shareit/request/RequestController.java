@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class RequestController {
     @GetMapping("/all")
     public List<RequestDto> getAllRequests(@RequestHeader("X-Sharer-User-Id") Integer ownerId) {
         log.info("RequestController: выполнение запроса на получение всех реквестов ");
-        return requestService.getAllRequests();
+        return requestService.getAllRequests(ownerId);
     }
 
     @GetMapping("/{requestId}")

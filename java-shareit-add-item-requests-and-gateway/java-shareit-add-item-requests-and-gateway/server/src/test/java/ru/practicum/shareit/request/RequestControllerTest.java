@@ -82,7 +82,7 @@ class RequestControllerTest {
     void getAllRequests() throws Exception {
         List<RequestDto> items = new ArrayList<>();
         items.add(requestMock);
-        Mockito.when(requestService.getAllRequests()).thenReturn(items);
+        Mockito.when(requestService.getAllRequests(1)).thenReturn(items);
         String actual = mockMvc.perform(MockMvcRequestBuilders.get("/request/all")
                         .header("X-Sharer-User-Id", authorId)
                         .contentType(MediaType.APPLICATION_JSON))

@@ -92,9 +92,15 @@ class InMemoryRequestServiceTest {
                 "name",
                 "email@asd2"
         );
+        UserDto userDto2 = new UserDto(
+                null,
+                "name",
+                "email@asd10"
+        );
         userDto = userService.addUser(userDto);
+        userDto2 = userService.addUser(userDto2);
         requestDto = requestService.addRequest(userDto.getId(), requestDto);
-        List<RequestDto> requests = requestService.getAllRequests();
+        List<RequestDto> requests = requestService.getAllRequests(userDto2.getId());
         Assertions.assertThat(requests.getFirst().getDescription()).isEqualTo(requestDto.getDescription());
     }
 

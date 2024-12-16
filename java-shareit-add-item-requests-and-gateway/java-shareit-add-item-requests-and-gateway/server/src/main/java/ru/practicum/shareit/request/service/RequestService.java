@@ -12,7 +12,7 @@ public interface RequestService {
 
     List<RequestDtoWithItem> getUserRequests(Integer ownerId);
 
-    List<RequestDto> getAllRequests();
+    List<RequestDto> getAllRequests(Integer ownerId);
 
     RequestDtoWithItem getRequestById(Integer requestId);
 }
