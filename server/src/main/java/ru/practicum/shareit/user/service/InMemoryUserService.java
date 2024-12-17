@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
@@ -25,6 +24,7 @@ public class InMemoryUserService implements UserService {
     @Override
     public UserDto addUser(UserDto user) {
         log.info("UserService выполнение запроса на добавление пользователя");
+        emailvalidation(user);
         return userMapper.toUserDto(userRepository.save(userMapper.toUser(user)));
     }
 
@@ -33,7 +33,7 @@ public class InMemoryUserService implements UserService {
         log.info("UserService выполнение запроса на обновление пользователя: {}", userId);
         User userToUpdate = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("позователя" + userId + " нет в базе"));
         if (user.getEmail() != null) {
-            emailvalidation(user, userId);
+            emailvalidation(user);
             userToUpdate.setEmail(user.getEmail());
         }
         if (user.getName() != null) {
@@ -66,7 +66,10 @@ public class InMemoryUserService implements UserService {
         userRepository.deleteAll();
     }
 
-    private void emailvalidation(UserDto user, Integer userId) {
+    private void emailvalidation(UserDto user) {
+        if (!user.getEmail().contains("@")) {
+            throw new ValidationException("не корректный email");
+        }
         for (User userToCompare : userRepository.findAll()) {
             if (userToCompare.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("пользователь с таким имейлом уже существует");
