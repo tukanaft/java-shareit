@@ -12,8 +12,10 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.repository.RequestRepository;
@@ -54,6 +56,8 @@ class InMemoryItemServiceTest {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private CommentRepository commentRepository;
 
     ItemDto itemDto = new ItemDto(
             null,
@@ -75,13 +79,30 @@ class InMemoryItemServiceTest {
             "description",
             null
     );
+    BookingDto bookingDto = new BookingDto(
+            null,
+            LocalDateTime.now().plusSeconds(1),
+            LocalDateTime.now().plusSeconds(2),
+            null,
+            null,
+            null
+    );
+    CommentDto commentDto = new CommentDto(
+            null,
+            "null",
+            null,
+            null,
+            null
+    );
 
     @AfterEach
     void clearDb() {
+        commentRepository.deleteAll();
         bookingRepository.deleteAll();
         itemRepository.deleteAll();
         requestRepository.deleteAll();
         userRepository.deleteAll();
+
     }
 
     @Test
@@ -197,14 +218,7 @@ class InMemoryItemServiceTest {
     void getItemWithBooking() {
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
-        BookingDto bookingDto = new BookingDto(
-                null,
-                LocalDateTime.now().plusMinutes(2),
-                LocalDateTime.now().plusMinutes(6),
-                itemDto.getId(),
-                null,
-                null
-        );
+        bookingDto.setItemId(itemDto.getId());
         bookingService.addBooking(bookingDto, userDto.getId());
         ItemDtoWithBooking saveItem = itemService.getItem(itemDto.getId());
         Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
@@ -212,6 +226,25 @@ class InMemoryItemServiceTest {
         Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
         Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
         Assertions.assertThat(saveItem.getLastBooking().getItem().getId()).isEqualTo(itemDto.getId());
+    }
+
+    @Test
+    void getItemWithBookingAndComment() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(bookingDto.getStart().plusSeconds(2));
+        bookingService.addBooking(bookingDto, userDto.getId());
+        Thread.sleep(6000);
+        commentDto = itemService.addComment(commentDto, itemDto.getId(), userDto.getId());
+        ItemDtoWithBooking saveItem = itemService.getItem(itemDto.getId());
+        Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(saveItem.getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
+        Assertions.assertThat(saveItem.getLastBooking().getItem().getId()).isEqualTo(itemDto.getId());
+        Assertions.assertThat(saveItem.getComments().getFirst().getId()).isEqualTo(commentDto.getId());
     }
 
     @Test
@@ -223,6 +256,43 @@ class InMemoryItemServiceTest {
         Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(itemDto.getDescription());
         Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(userDto.getId());
         Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(itemDto.getAvailable());
+    }
+
+    @Test
+    void getItemsWithComment() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(bookingDto.getStart().plusSeconds(2));
+        bookingService.addBooking(bookingDto, userDto.getId());
+        Thread.sleep(6000);
+        commentDto = itemService.addComment(commentDto, itemDto.getId(), userDto.getId());
+        List<ItemDtoWithBooking> items = itemService.getItems(itemDto.getOwner().getId());
+        Assertions.assertThat(items.getFirst().getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(itemDto.getAvailable());
+        Assertions.assertThat(items.getFirst().getComments().getFirst().getId()).isEqualTo(commentDto.getId());
+    }
+
+    @Test
+    void getItemsWithBookingAndComment() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(bookingDto.getStart().plusSeconds(2));
+        bookingService.addBooking(bookingDto, userDto.getId());
+        Thread.sleep(6000);
+        commentDto = itemService.addComment(commentDto, itemDto.getId(), userDto.getId());
+        List<ItemDtoWithBooking> items = itemService.getItems(itemDto.getOwner().getId());
+        Assertions.assertThat(items.getFirst().getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(itemDto.getAvailable());
+        Assertions.assertThat(items.getFirst().getComments().getFirst().getId()).isEqualTo(commentDto.getId());
+        Assertions.assertThat(items.getFirst().getLastBooking().getItem().getId()).isEqualTo(itemDto.getId());
     }
 
     @Test

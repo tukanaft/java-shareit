@@ -102,9 +102,10 @@ public class InMemoryItemService implements ItemService {
                 if (bookings.size() == 1) {
                     items.add(itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
                             commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId()))));
+                } else {
+                    items.add(itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
+                            commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId()))));
                 }
-                items.add(itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
-                        commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId()))));
             } else {
                 items.add(itemMapper.itemToItemDtoWithBooking(item, null, null, null));
             }
@@ -152,7 +153,7 @@ public class InMemoryItemService implements ItemService {
 
     private void validateComment(User user, Item item) {
         for (Booking booking : bookingRepository.findAllByBooker_Id(user.getId())) {
-            if (booking.getItem().equals(item) && booking.getEnd().isBefore(LocalDateTime.now())) {
+            if (booking.getItem().getId().equals(item.getId()) && booking.getEnd().isBefore(LocalDateTime.now())) {
                 return;
             }
         }

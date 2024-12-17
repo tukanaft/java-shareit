@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoToReturn;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
@@ -64,6 +65,12 @@ class InMemoryBookingServiceTest {
             null
     );
 
+    UserDto userDto = new UserDto(
+            null,
+            "name",
+            "email@asd"
+    );
+
     @AfterEach
     void clearDb() {
         bookingRepository.deleteAll();
@@ -73,11 +80,6 @@ class InMemoryBookingServiceTest {
 
     @Test
     void addBooking() throws InterruptedException {
-        UserDto userDto = new UserDto(
-                null,
-                "name",
-                "email@asd"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         bookingDto.setItemId(itemDto.getId());
@@ -90,12 +92,21 @@ class InMemoryBookingServiceTest {
     }
 
     @Test
+    void addBookingUserNotFound() {
+        Assertions.assertThatThrownBy(() -> bookingService.addBooking(bookingDto, 123))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void addBookingItemNotFound() {
+        userDto = userService.addUser(userDto);
+        bookingDto.setItemId(123);
+        Assertions.assertThatThrownBy(() -> bookingService.addBooking(bookingDto, userDto.getId()))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
     void updateStatus() {
-        UserDto userDto = new UserDto(
-                null,
-                "name",
-                "email@asd1"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         bookingDto.setItemId(itemDto.getId());
@@ -108,11 +119,6 @@ class InMemoryBookingServiceTest {
 
     @Test
     void getBooking() {
-        UserDto userDto = new UserDto(
-                null,
-                "name",
-                "email@asd2"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         bookingDto.setItemId(itemDto.getId());
@@ -125,11 +131,6 @@ class InMemoryBookingServiceTest {
 
     @Test
     void getBookingByUser() {
-        UserDto userDto = new UserDto(
-                null,
-                "name",
-                "email@asd3"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         bookingDto.setItemId(itemDto.getId());
@@ -142,11 +143,6 @@ class InMemoryBookingServiceTest {
 
     @Test
     void getBookingByOwner() {
-        UserDto userDto = new UserDto(
-                null,
-                "name",
-                "email@asd4"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         bookingDto.setItemId(itemDto.getId());
