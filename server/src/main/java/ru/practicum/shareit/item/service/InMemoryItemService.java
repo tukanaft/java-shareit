@@ -80,7 +80,7 @@ public class InMemoryItemService implements ItemService {
                 return itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
             } else {
-                return itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
+                return itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), null,
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
             }
         } else {
