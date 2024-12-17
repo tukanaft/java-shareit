@@ -10,23 +10,24 @@ import org.springframework.boot.test.json.JsonContent;
 import java.io.IOException;
 
 @JsonTest
-class CommentDtoTest {
+class ItemDtoTest {
 
     @Autowired
-    JacksonTester<CommentDto> commentDtoDtoJacksonTester;
+    JacksonTester<ItemDto> itemDtoDtoJacksonTester;
 
     @Test
-    void commentDtoTest() throws IOException {
-        CommentDto commentDto = new CommentDto(
+    void itemDtoTest() throws IOException {
+        ItemDto itemDto = new ItemDto(
                 1,
-                "text",
-                "auhorName",
+                "name",
+                "description",
                 null,
+                true,
                 null
         );
 
-        JsonContent<CommentDto> actual = commentDtoDtoJacksonTester.write(commentDto);
-        Assertions.assertThat(actual).hasJsonPath("$.created");
+        JsonContent<ItemDto> actual = itemDtoDtoJacksonTester.write(itemDto);
+        Assertions.assertThat(itemDto).isEqualTo(itemDto);
     }
 
 }
