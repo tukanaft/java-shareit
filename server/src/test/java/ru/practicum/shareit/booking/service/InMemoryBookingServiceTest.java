@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoToReturn;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
@@ -98,6 +99,16 @@ class InMemoryBookingServiceTest {
     }
 
     @Test
+    void addBookingValidationFail() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setEnd(LocalDateTime.now().minusWeeks(1));
+        Assertions.assertThatThrownBy(() -> bookingService.addBooking(bookingDto, userDto.getId()))
+                .isInstanceOf(ValidationException.class);
+    }
+
+    @Test
     void addBookingItemNotFound() {
         userDto = userService.addUser(userDto);
         bookingDto.setItemId(123);
@@ -115,6 +126,16 @@ class InMemoryBookingServiceTest {
         bookingDto.setStatus(Status.APPROVED);
         Assertions.assertThat(bookingActual.getItem().getId()).isEqualTo(bookingDto.getItemId());
         Assertions.assertThat(bookingActual.getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void updateStatusValidationFail() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        BookingDtoToReturn bookingDto2 = bookingService.addBooking(bookingDto, userDto.getId());
+        Assertions.assertThatThrownBy(() -> bookingService.updateStatus(123, bookingDto2.getId(), true))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test

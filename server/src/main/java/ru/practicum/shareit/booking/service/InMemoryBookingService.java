@@ -140,7 +140,6 @@ public class InMemoryBookingService implements BookingService {
     }
 
     private Booking getBookingById(Integer bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("бронирования c id " + bookingId + "нет в базе"));
-        return booking;
+        return bookingRepository.findById(bookingId).orElseThrow(() -> new NotFoundException("бронирования c id " + bookingId + "нет в базе"));
     }
 }
