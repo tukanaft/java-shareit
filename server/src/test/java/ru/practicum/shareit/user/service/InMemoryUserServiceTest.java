@@ -12,8 +12,6 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.List;
-
 @SpringBootTest
 @ActiveProfiles("test")
 @RequiredArgsConstructor
@@ -55,7 +53,7 @@ class InMemoryUserServiceTest {
 
     @Test
     void updateUserNotFound() {
-        Assertions.assertThatThrownBy(() -> userService.updateUser( userDto, 123))
+        Assertions.assertThatThrownBy(() -> userService.updateUser(userDto, 123))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -87,7 +85,7 @@ class InMemoryUserServiceTest {
 
     @Test
     void getUserNotFound() {
-        Assertions.assertThatThrownBy(() -> userService.getUser(  123))
+        Assertions.assertThatThrownBy(() -> userService.getUser(123))
                 .isInstanceOf(NotFoundException.class);
     }
 

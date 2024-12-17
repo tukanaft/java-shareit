@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -77,11 +76,10 @@ public class InMemoryItemService implements ItemService {
         Item item = itemRepository.findById(itemId).get();
         List<BookingDtoToReturn> bookings = bookingMapper.bookingDtoList(bookingRepository.findAllByItem_id(item.getId()));
         if (!bookings.isEmpty()) {
-            if (bookings.size() == 1){
+            if (bookings.size() == 1) {
                 return itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
-            }
-            else {
+            } else {
                 return itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
             }
@@ -101,7 +99,7 @@ public class InMemoryItemService implements ItemService {
         for (Item item : itemRepository.findAllByOwner_Id(ownerId)) {
             List<BookingDtoToReturn> bookings = bookingMapper.bookingDtoList(bookingRepository.findAllByItem_id(item.getId()));
             if (!bookings.isEmpty()) {
-                if (bookings.size() == 1){
+                if (bookings.size() == 1) {
                     items.add(itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
                             commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId()))));
                 }
