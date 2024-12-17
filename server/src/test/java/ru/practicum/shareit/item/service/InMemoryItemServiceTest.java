@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -47,6 +48,12 @@ class InMemoryItemServiceTest {
             null
     );
 
+    UserDto userDto = new UserDto(
+            null,
+            "name",
+            "email@asd"
+    );
+
     @AfterEach
     void clearDb() {
         itemRepository.deleteAll();
@@ -55,11 +62,6 @@ class InMemoryItemServiceTest {
 
     @Test
     void addItem() {
-        UserDto userDto = new UserDto(
-                null,
-                "name",
-                "email@asd"
-        );
         userDto = userService.addUser(userDto);
         ItemDto saveItem = itemService.addItem(userDto.getId(), itemDto);
         Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
@@ -69,12 +71,13 @@ class InMemoryItemServiceTest {
     }
 
     @Test
+    void addItemNoUser() {
+        Assertions.assertThatThrownBy(() -> itemService.addItem(123, itemDto))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
     void updateItem() {
-        UserDto userDto = new UserDto(
-                null,
-                "name1",
-                "email@asd1"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         itemDto.setName("new name");
@@ -89,11 +92,6 @@ class InMemoryItemServiceTest {
 
     @Test
     void getItem() {
-        UserDto userDto = new UserDto(
-                null,
-                "name2",
-                "email@asd2"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         ItemDtoWithBooking saveItem = itemService.getItem(itemDto.getId());
@@ -105,11 +103,6 @@ class InMemoryItemServiceTest {
 
     @Test
     void getItems() {
-        UserDto userDto = new UserDto(
-                null,
-                "name3",
-                "email@asd3"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         List<ItemDtoWithBooking> items = itemService.getItems(itemDto.getOwner().getId());
@@ -121,11 +114,6 @@ class InMemoryItemServiceTest {
 
     @Test
     void findItems() {
-        UserDto userDto = new UserDto(
-                null,
-                "name4",
-                "email@asd4"
-        );
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         List<ItemDtoWithBooking> items = itemService.getItems(userDto.getId());
