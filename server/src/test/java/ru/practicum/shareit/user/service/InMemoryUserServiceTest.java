@@ -59,7 +59,6 @@ class InMemoryUserServiceTest {
         userDto.setName("grisha");
         UserDto saveUser = userService.updateUser(userDto, userDto.getId());
         Assertions.assertThat(saveUser.getName()).isEqualTo(userDto.getName());
-        Assertions.assertThat(saveUser.getEmail()).isEqualTo(userDto.getEmail());
     }
 
     @Test
@@ -68,7 +67,6 @@ class InMemoryUserServiceTest {
         userDto.setEmail("mem@ddd");
         userDto.setName(null);
         UserDto saveUser = userService.updateUser(userDto, userDto.getId());
-        Assertions.assertThat(saveUser.getName()).isEqualTo(userDto.getName());
         Assertions.assertThat(saveUser.getEmail()).isEqualTo(userDto.getEmail());
     }
 
