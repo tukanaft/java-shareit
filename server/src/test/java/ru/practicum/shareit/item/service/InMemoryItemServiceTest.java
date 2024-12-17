@@ -216,21 +216,7 @@ class InMemoryItemServiceTest {
     }
 
     @Test
-    void getItemWithBooking() {
-        userDto = userService.addUser(userDto);
-        itemDto = itemService.addItem(userDto.getId(), itemDto);
-        bookingDto.setItemId(itemDto.getId());
-        bookingService.addBooking(bookingDto, userDto.getId());
-        ItemDtoWithBooking saveItem = itemService.getItem(itemDto.getId());
-        Assertions.assertThat(saveItem.getName()).isEqualTo(itemDto.getName());
-        Assertions.assertThat(saveItem.getDescription()).isEqualTo(itemDto.getDescription());
-        Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
-        Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
-        Assertions.assertThat(saveItem.getLastBooking().getItem().getId()).isEqualTo(itemDto.getId());
-    }
-
-    @Test
-    void getItemWithBookingAndComment() throws InterruptedException {
+    void getItemWithComment() throws InterruptedException {
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         bookingDto.setItemId(itemDto.getId());
@@ -244,7 +230,6 @@ class InMemoryItemServiceTest {
         Assertions.assertThat(saveItem.getDescription()).isEqualTo(itemDto.getDescription());
         Assertions.assertThat(saveItem.getOwner().getId()).isEqualTo(userDto.getId());
         Assertions.assertThat(saveItem.getAvailable()).isEqualTo(itemDto.getAvailable());
-        Assertions.assertThat(saveItem.getLastBooking().getItem().getId()).isEqualTo(itemDto.getId());
         Assertions.assertThat(saveItem.getComments().getFirst().getId()).isEqualTo(commentDto.getId());
     }
 
@@ -277,6 +262,24 @@ class InMemoryItemServiceTest {
         Assertions.assertThat(items.getFirst().getComments().getFirst().getId()).isEqualTo(commentDto.getId());
     }
 
+    @Test
+    void getItemsWithBookingAndComment() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(bookingDto.getStart().plusSeconds(2));
+        bookingService.addBooking(bookingDto, userDto.getId());
+        Thread.sleep(6000);
+        commentDto = itemService.addComment(commentDto, itemDto.getId(), userDto.getId());
+        List<ItemDtoWithBooking> items = itemService.getItems(itemDto.getOwner().getId());
+        Assertions.assertThat(items.getFirst().getName()).isEqualTo(itemDto.getName());
+        Assertions.assertThat(items.getFirst().getDescription()).isEqualTo(itemDto.getDescription());
+        Assertions.assertThat(items.getFirst().getOwner().getId()).isEqualTo(userDto.getId());
+        Assertions.assertThat(items.getFirst().getAvailable()).isEqualTo(itemDto.getAvailable());
+        Assertions.assertThat(items.getFirst().getComments().getFirst().getId()).isEqualTo(commentDto.getId());
+        Assertions.assertThat(items.getFirst().getLastBooking().getItem().getId()).isEqualTo(itemDto.getId());
+    }
 
     @Test
     void getItemsUserNotFound() {
