@@ -31,6 +31,6 @@ class ItemDtoWithBookingTest {
         );
 
         JsonContent<ItemDtoWithBooking> actual = itemDtoDtoJacksonTester.write(itemDto);
-        Assertions.assertThat(itemDto).isEqualTo(itemDto);
+        Assertions.assertThat(itemDto.getName()).isEqualTo("name");
     }
 }
