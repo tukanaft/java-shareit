@@ -12,6 +12,8 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.List;
+
 @SpringBootTest
 @ActiveProfiles("test")
 @RequiredArgsConstructor
@@ -73,6 +75,14 @@ class InMemoryUserServiceTest {
         userDto.setName(null);
         UserDto saveUser = userService.updateUser(userDto, userDto.getId());
         Assertions.assertThat(saveUser.getEmail()).isEqualTo(userDto.getEmail());
+    }
+
+    @Test
+    void getUsers() {
+        userDto = userService.addUser(userDto);
+        List<UserDto> users = userService.getUsers();
+        Assertions.assertThat(users.getFirst().getName()).isEqualTo(userDto.getName());
+        Assertions.assertThat(users.getFirst().getEmail()).isEqualTo(userDto.getEmail());
     }
 
     @Test
