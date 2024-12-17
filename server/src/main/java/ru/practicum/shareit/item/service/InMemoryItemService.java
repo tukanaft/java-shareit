@@ -77,10 +77,10 @@ public class InMemoryItemService implements ItemService {
         List<BookingDtoToReturn> bookings = bookingMapper.bookingDtoList(bookingRepository.findAllByItem_id(item.getId()));
         if (!bookings.isEmpty()) {
             if (bookings.size() == 1) {
-                return itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
+                return itemMapper.itemToItemDtoWithBooking(item, null, null,
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
             } else {
-                return itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), null,
+                return itemMapper.itemToItemDtoWithBooking(item, null, null,
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
             }
         } else {
