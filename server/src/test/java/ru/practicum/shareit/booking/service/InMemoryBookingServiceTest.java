@@ -129,6 +129,18 @@ class InMemoryBookingServiceTest {
     }
 
     @Test
+    void updateStatusRejected() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        BookingDtoToReturn bookingActual = bookingService.updateStatus(userDto.getId(), bookingDto.getId(), false);
+        bookingDto.setStatus(Status.REJECTED);
+        Assertions.assertThat(bookingActual.getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingActual.getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
     void updateStatusValidationFail() {
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
@@ -148,6 +160,12 @@ class InMemoryBookingServiceTest {
         BookingDtoToReturn bookingActual = bookingService.getBooking(bookingDto.getId(), userDto.getId());
         Assertions.assertThat(bookingActual.getItem().getId()).isEqualTo(bookingDto.getItemId());
         Assertions.assertThat(bookingActual.getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingUserNotFound() {
+        Assertions.assertThatThrownBy(() -> bookingService.getBookingByUser(123, "ALL"))
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -172,5 +190,11 @@ class InMemoryBookingServiceTest {
         List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "ALL");
         Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
         Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingOwnerNotFound() {
+        Assertions.assertThatThrownBy(() -> bookingService.getBookingByOwner(123, "ALL"))
+                .isInstanceOf(NotFoundException.class);
     }
 }
