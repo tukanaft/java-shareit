@@ -181,6 +181,79 @@ class InMemoryBookingServiceTest {
     }
 
     @Test
+    void getBookingByUserCurrent() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(12));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        Thread.sleep(6000);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "CURRENT");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingByUserPast() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        Thread.sleep(6000);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "PAST");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingByUserFuture() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusDays(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "FUTURE");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingByUserWaiting() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusDays(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "WAITING");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingByUserRejected() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusDays(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingService.updateStatus(userDto.getId(), bookingDto.getId(), false);
+        bookingDto.setStatus(Status.REJECTED);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByUser(userDto.getId(), "REJECTED");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
     void getBookingByOwner() {
         userDto = userService.addUser(userDto);
         itemDto = itemService.addItem(userDto.getId(), itemDto);
@@ -188,6 +261,65 @@ class InMemoryBookingServiceTest {
         bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
         bookingDto.setStatus(Status.WAITING);
         List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "ALL");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingOwnerCurrent() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(12));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        Thread.sleep(6000);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "CURRENT");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+
+    @Test
+    void getBookingByOwnerFuture() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusDays(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "FUTURE");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingByOwnerWaiting() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusDays(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingDto.setStatus(Status.WAITING);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "WAITING");
+        Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
+        Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
+    }
+
+    @Test
+    void getBookingByOwnerRejected() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusDays(1));
+        bookingDto.setEnd(LocalDateTime.now().plusDays(3));
+        bookingDto.setId(bookingService.addBooking(bookingDto, userDto.getId()).getId());
+        bookingService.updateStatus(userDto.getId(), bookingDto.getId(), false);
+        bookingDto.setStatus(Status.REJECTED);
+        List<BookingDtoToReturn> bookingsActual = bookingService.getBookingByOwner(userDto.getId(), "REJECTED");
         Assertions.assertThat(bookingsActual.getFirst().getItem().getId()).isEqualTo(bookingDto.getItemId());
         Assertions.assertThat(bookingsActual.getFirst().getStatus()).isEqualTo(bookingDto.getStatus());
     }
