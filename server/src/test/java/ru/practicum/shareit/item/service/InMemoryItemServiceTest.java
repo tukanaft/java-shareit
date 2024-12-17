@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
@@ -308,5 +309,43 @@ class InMemoryItemServiceTest {
         itemDto = itemService.addItem(userDto.getId(), itemDto);
         List<ItemDtoWithBooking> items = itemService.getItems(userDto.getId());
         Assertions.assertThat(itemDto.getName()).isEqualTo("name");
+    }
+
+    @Test
+    void addComment() throws InterruptedException {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(bookingDto.getStart().plusSeconds(2));
+        bookingService.addBooking(bookingDto, userDto.getId());
+        Thread.sleep(6000);
+        CommentDto actual = itemService.addComment(commentDto, itemDto.getId(), userDto.getId());
+        Assertions.assertThat(actual.getText()).isEqualTo(commentDto.getText());
+    }
+
+    @Test
+    void addCommentUserNotFound() {
+        Assertions.assertThatThrownBy(() -> itemService.addComment(commentDto, 123, 123))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void addCommentItemNotFound() {
+        userDto = userService.addUser(userDto);
+        Assertions.assertThatThrownBy(() -> itemService.addComment(commentDto, 123, userDto.getId()))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void addCommentValidationFail() {
+        userDto = userService.addUser(userDto);
+        itemDto = itemService.addItem(userDto.getId(), itemDto);
+        bookingDto.setItemId(itemDto.getId());
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(bookingDto.getStart().plusMinutes(10));
+        bookingService.addBooking(bookingDto, userDto.getId());
+        Assertions.assertThatThrownBy(() -> itemService.addComment(commentDto, itemDto.getId(), userDto.getId()))
+                .isInstanceOf(ValidationException.class);
     }
 }
