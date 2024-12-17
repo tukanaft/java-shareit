@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -41,6 +42,13 @@ class InMemoryUserServiceTest {
         UserDto saveUser = userService.addUser(userDto);
         Assertions.assertThat(saveUser.getName()).isEqualTo(userDto.getName());
         Assertions.assertThat(saveUser.getEmail()).isEqualTo(userDto.getEmail());
+    }
+
+    @Test
+    void addUserBadEmail() {
+        userDto.setEmail("gegege");
+        Assertions.assertThatThrownBy(() -> userService.addUser(userDto))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
