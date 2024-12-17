@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
@@ -65,7 +66,13 @@ class InMemoryRequestServiceTest {
     void addRequest() {
         userDto = userService.addUser(userDto);
         RequestDto saveRequest = requestService.addRequest(userDto.getId(), requestDto);
-        Assertions.assertThat(requestDto.getDescription()).isEqualTo(requestDto.getDescription());
+        Assertions.assertThat(requestDto.getDescription()).isEqualTo(saveRequest.getDescription());
+    }
+
+    @Test
+    void addRequestUserNotFound() {
+        Assertions.assertThatThrownBy(() -> requestService.addRequest(123, requestDto))
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -89,6 +96,20 @@ class InMemoryRequestServiceTest {
     }
 
     @Test
+    void getUserRequestsNoItems() {
+        userDto = userService.addUser(userDto);
+        requestDto = requestService.addRequest(userDto.getId(), requestDto);
+        List<RequestDtoWithItem> requestDtoWithItems = requestService.getUserRequests(userDto.getId());
+        Assertions.assertThat(requestDtoWithItems.getFirst().getDescription()).isEqualTo(requestDto.getDescription());
+    }
+
+    @Test
+    void getUserRequestUserNotFound() {
+        Assertions.assertThatThrownBy(() -> requestService.getUserRequests(123))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
     void getAllRequests() {
         UserDto userDto2 = new UserDto(
                 null,
@@ -108,5 +129,11 @@ class InMemoryRequestServiceTest {
         requestDto = requestService.addRequest(userDto.getId(), requestDto);
         RequestDtoWithItem saveRequest = requestService.getRequestById(requestDto.getId());
         Assertions.assertThat(saveRequest.getDescription()).isEqualTo(requestDto.getDescription());
+    }
+
+    @Test
+    void getRequestByIdNotFound() {
+        Assertions.assertThatThrownBy(() -> requestService.getRequestById(123))
+                .isInstanceOf(NotFoundException.class);
     }
 }

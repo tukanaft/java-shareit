@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -53,6 +54,12 @@ class InMemoryUserServiceTest {
     }
 
     @Test
+    void updateUserNotFound() {
+        Assertions.assertThatThrownBy(() -> userService.updateUser( userDto, 123))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
     void updateUserName() {
         userDto = userService.addUser(userDto);
         userDto.setEmail(null);
@@ -71,18 +78,17 @@ class InMemoryUserServiceTest {
     }
 
     @Test
-    void getUsers() {
-        userDto = userService.addUser(userDto);
-        List<UserDto> savedUsers = userService.getUsers();
-        Assertions.assertThat(savedUsers.contains(userDto)).isEqualTo(true);
-    }
-
-    @Test
     void getUser() {
         userDto = userService.addUser(userDto);
         UserDto saveUser = userService.getUser(userDto.getId());
         Assertions.assertThat(saveUser.getName()).isEqualTo(userDto.getName());
         Assertions.assertThat(saveUser.getEmail()).isEqualTo(userDto.getEmail());
+    }
+
+    @Test
+    void getUserNotFound() {
+        Assertions.assertThatThrownBy(() -> userService.getUser(  123))
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test

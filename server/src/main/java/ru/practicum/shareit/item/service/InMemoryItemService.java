@@ -76,9 +76,15 @@ public class InMemoryItemService implements ItemService {
         isItemExists(itemId);
         Item item = itemRepository.findById(itemId).get();
         List<BookingDtoToReturn> bookings = bookingMapper.bookingDtoList(bookingRepository.findAllByItem_id(item.getId()));
-        if (bookings.size() > 1) {
-            return itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
-                    commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
+        if (!bookings.isEmpty()) {
+            if (bookings.size() == 1){
+                return itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
+                        commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
+            }
+            else {
+                return itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
+                        commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
+            }
         } else {
             return itemMapper.itemToItemDtoWithBooking(item, null, null,
                     commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId())));
@@ -94,7 +100,11 @@ public class InMemoryItemService implements ItemService {
         List<ItemDtoWithBooking> items = new ArrayList<>();
         for (Item item : itemRepository.findAllByOwner_Id(ownerId)) {
             List<BookingDtoToReturn> bookings = bookingMapper.bookingDtoList(bookingRepository.findAllByItem_id(item.getId()));
-            if (bookings.size() > 1) {
+            if (!bookings.isEmpty()) {
+                if (bookings.size() == 1){
+                    items.add(itemMapper.itemToItemDtoWithBooking(item, bookings.getFirst(), null,
+                            commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId()))));
+                }
                 items.add(itemMapper.itemToItemDtoWithBooking(item, bookings.get(0), bookings.get(1),
                         commentMapper.toCommentDtoList(commentRepository.findAllByItem_Id(item.getId()))));
             } else {
